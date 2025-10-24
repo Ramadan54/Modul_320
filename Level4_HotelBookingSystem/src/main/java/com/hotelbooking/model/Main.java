@@ -40,5 +40,28 @@ public class Main {
         System.out.println("Single Room: " + room101.calculatePrice(4) + " CHF");
         System.out.println("Double Room with Balcony: " + room102.calculatePrice(4) + " CHF");
         System.out.println("Suite with Jacuzzi: " + room103.calculatePrice(4) + " CHF");
+
+        // DECORATOR PATTERN DEMO
+        System.out.println("\n--- Decorator Pattern - Additional Services ---\n");
+
+        // Basic room
+        Room basicRoom = new SingleRoom(201, 80.0);
+        System.out.println(basicRoom.getDescription());
+        System.out.println("Price for 3 nights: " + basicRoom.calculatePrice(3) + " CHF\n");
+
+        // Room with Breakfast
+        Room roomWithBreakfast = new Breakfast(basicRoom);
+        System.out.println(roomWithBreakfast.getDescription());
+        System.out.println("Price for 3 nights: " + roomWithBreakfast.calculatePrice(3) + " CHF\n");
+
+        // Room with Breakfast AND Parking (stacking decorators!)
+        Room roomWithBreakfastAndParking = new Parking(new Breakfast(basicRoom));
+        System.out.println(roomWithBreakfastAndParking.getDescription());
+        System.out.println("Price for 3 nights: " + roomWithBreakfastAndParking.calculatePrice(3) + " CHF\n");
+
+        // Full package: Breakfast + Parking + Wellness
+        Room fullPackage = new Wellness(new Parking(new Breakfast(basicRoom)));
+        System.out.println(fullPackage.getDescription());
+        System.out.println("Price for 3 nights: " + fullPackage.calculatePrice(3) + " CHF");
     }
 }
