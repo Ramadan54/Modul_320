@@ -10,6 +10,7 @@ public class Booking {
     private Room room;
     private Customer customer;
     private double totalPrice;
+    private BookingStatus status;
 
     public Booking(int bookingId, LocalDate checkInDate, LocalDate checkOutDate,
                    Room room, Customer customer) {
@@ -19,6 +20,7 @@ public class Booking {
         this.room = room;
         this.customer = customer;
         this.totalPrice = calculateTotalPrice();
+        this.status = BookingStatus.RESERVED;
     }
 
     public double calculateTotalPrice() {
@@ -26,7 +28,32 @@ public class Booking {
         return room.calculatePrice(numberOfDays);
     }
 
+    public void confirm() {
+        this.status = BookingStatus.CONFIRMED;
+        System.out.println("Booking #" + bookingId + " confirmed.");
+    }
+
+    public void checkIn() {
+        if (status == BookingStatus.CONFIRMED) {
+            this.status = BookingStatus.CHECKED_IN;
+            System.out.println("Check-in successful for Booking #" + bookingId);
+        } else {
+            System.out.println("Cannot check in. Booking must be confirmed first.");
+        }
+    }
+
+    public void checkOut() {
+        if (status == BookingStatus.CHECKED_IN) {
+            this.status = BookingStatus.CHECKED_OUT;
+            room.setAvailable(true);
+            System.out.println("Check-out successful for Booking #" + bookingId);
+        } else {
+            System.out.println("Cannot check out. Customer must be checked in first.");
+        }
+    }
+
     public void cancel() {
+        this.status = BookingStatus.CANCELLED;
         room.setAvailable(true);
         System.out.println("Booking #" + bookingId + " has been cancelled.");
     }
@@ -56,12 +83,17 @@ public class Booking {
         return totalPrice;
     }
 
+    public BookingStatus getStatus() {
+        return status;
+    }
+
     @Override
     public String toString() {
         return "Booking #" + bookingId +
                 " | Room: " + room.getRoomNumber() +
                 " | Check-in: " + checkInDate +
                 " | Check-out: " + checkOutDate +
-                " | Total: " + totalPrice + " CHF";
+                " | Total: " + totalPrice + " CHF" +
+                " | Status: " + status;
     }
 }

@@ -41,8 +41,8 @@ public class Main {
         System.out.println("Double Room with Balcony: " + room102.calculatePrice(4) + " CHF");
         System.out.println("Suite with Jacuzzi: " + room103.calculatePrice(4) + " CHF");
 
-        // DECORATOR PATTERN DEMO
-        System.out.println("\n--- Decorator Pattern - Additional Services ---\n");
+        // === DECORATOR PATTERN DEMO ===
+        System.out.println("\n=== Decorator Pattern - Additional Services ===\n");
 
         // Basic room
         Room basicRoom = new SingleRoom(201, 80.0);
@@ -63,5 +63,32 @@ public class Main {
         Room fullPackage = new Wellness(new Parking(new Breakfast(basicRoom)));
         System.out.println(fullPackage.getDescription());
         System.out.println("Price for 3 nights: " + fullPackage.calculatePrice(3) + " CHF");
+
+        // === BOOKING STATUS DEMO ===
+        System.out.println("\n=== Booking Status Lifecycle ===\n");
+
+        Room testRoom = new DoubleRoom(301, 100.0, false);
+        Customer testCustomer = new Customer(2, "Anna Schmidt", "anna@example.com", "+41 78 999 88 77");
+
+        LocalDate checkIn2 = LocalDate.of(2025, 12, 1);
+        LocalDate checkOut2 = LocalDate.of(2025, 12, 5);
+
+        Booking booking2 = new Booking(2, checkIn2, checkOut2, testRoom, testCustomer);
+        System.out.println(booking2);
+        System.out.println();
+
+        // Confirm booking
+        booking2.confirm();
+        System.out.println(booking2);
+        System.out.println();
+
+        // Check in
+        booking2.checkIn();
+        System.out.println(booking2);
+        System.out.println();
+
+        // Check out
+        booking2.checkOut();
+        System.out.println(booking2);
     }
 }
