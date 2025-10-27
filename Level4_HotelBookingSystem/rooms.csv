@@ -1,3 +1,6 @@
+201,DoubleRoom,120.0,false
 101,SingleRoom,80.0,true
-102,DoubleRoom,120.0,true
-103,Suite,250.0,true
+102,SingleRoom,85.0,true
+202,DoubleRoom,110.0,true
+301,Suite,250.0,true
+302,Suite,280.0,true
