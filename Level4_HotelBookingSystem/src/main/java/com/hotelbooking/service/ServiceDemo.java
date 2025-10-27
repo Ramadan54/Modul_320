@@ -1,6 +1,7 @@
 package com.hotelbooking.service;
 
 import com.hotelbooking.model.*;
+import com.hotelbooking.exception.*;
 import java.time.LocalDate;
 
 public class ServiceDemo {
@@ -29,13 +30,18 @@ public class ServiceDemo {
         Customer customer1 = new Customer(1, "Max Mustermann",
                 "max@example.com", "+41 79 123 45 67");
 
-        // Create booking using service
+        // Create booking using service with exception handling
         System.out.println("=== Creating Booking ===");
         LocalDate checkIn = LocalDate.of(2025, 11, 15);
         LocalDate checkOut = LocalDate.of(2025, 11, 20);
 
-        Booking booking = bookingService.createBooking(checkIn, checkOut, room102, customer1);
-        System.out.println(booking);
+        Booking booking = null;
+        try {
+            booking = bookingService.createBooking(checkIn, checkOut, room102, customer1);
+            System.out.println(booking);
+        } catch (RoomNotAvailableException | InvalidBookingDateException e) {
+            System.out.println("Error creating booking: " + e.getMessage());
+        }
         System.out.println();
 
         // Display available rooms (room102 should now be occupied)
@@ -43,11 +49,17 @@ public class ServiceDemo {
         System.out.println();
 
         // Booking lifecycle using service
-        System.out.println("=== Booking Lifecycle ===");
-        bookingService.confirmBooking(1);
-        bookingService.checkInBooking(1);
-        bookingService.checkOutBooking(1);
-        System.out.println();
+        if (booking != null) {
+            System.out.println("=== Booking Lifecycle ===");
+            try {
+                bookingService.confirmBooking(1);
+                bookingService.checkInBooking(1);
+                bookingService.checkOutBooking(1);
+            } catch (BookingNotFoundException e) {
+                System.out.println("Error in booking lifecycle: " + e.getMessage());
+            }
+            System.out.println();
+        }
 
         // Display available rooms (room102 should be available again)
         roomService.displayAvailableRooms();

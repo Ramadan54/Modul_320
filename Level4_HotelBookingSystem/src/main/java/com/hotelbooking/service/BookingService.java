@@ -1,6 +1,7 @@
 package com.hotelbooking.service;
 
 import com.hotelbooking.model.*;
+import com.hotelbooking.exception.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +15,25 @@ public class BookingService {
         this.nextBookingId = 1;
     }
 
-    public Booking createBooking(LocalDate checkIn, LocalDate checkOut, Room room, Customer customer) {
+    public Booking createBooking(LocalDate checkIn, LocalDate checkOut, Room room, Customer customer)
+            throws RoomNotAvailableException, InvalidBookingDateException {
+
+        // Validate dates
+        if (checkIn == null || checkOut == null) {
+            throw new InvalidBookingDateException("Check-in and check-out dates cannot be null.");
+        }
+
+        if (checkOut.isBefore(checkIn) || checkOut.isEqual(checkIn)) {
+            throw new InvalidBookingDateException(checkIn, checkOut);
+        }
+
+        if (checkIn.isBefore(LocalDate.now())) {
+            throw new InvalidBookingDateException("Check-in date cannot be in the past.");
+        }
+
+        // Validate room availability
         if (!room.isAvailable()) {
-            System.out.println("Error: Room is not available!");
-            return null;
+            throw new RoomNotAvailableException(room.getRoomNumber());
         }
 
         Booking booking = new Booking(nextBookingId++, checkIn, checkOut, room, customer);
@@ -29,41 +45,37 @@ public class BookingService {
         return booking;
     }
 
-    public void confirmBooking(int bookingId) {
+    public void confirmBooking(int bookingId) throws BookingNotFoundException {
         Booking booking = findBookingById(bookingId);
-        if (booking != null) {
-            booking.confirm();
-        } else {
-            System.out.println("Booking not found!");
+        if (booking == null) {
+            throw new BookingNotFoundException(bookingId);
         }
+        booking.confirm();
     }
 
-    public void checkInBooking(int bookingId) {
+    public void checkInBooking(int bookingId) throws BookingNotFoundException {
         Booking booking = findBookingById(bookingId);
-        if (booking != null) {
-            booking.checkIn();
-        } else {
-            System.out.println("Booking not found!");
+        if (booking == null) {
+            throw new BookingNotFoundException(bookingId);
         }
+        booking.checkIn();
     }
 
-    public void checkOutBooking(int bookingId) {
+    public void checkOutBooking(int bookingId) throws BookingNotFoundException {
         Booking booking = findBookingById(bookingId);
-        if (booking != null) {
-            booking.checkOut();
-        } else {
-            System.out.println("Booking not found!");
+        if (booking == null) {
+            throw new BookingNotFoundException(bookingId);
         }
+        booking.checkOut();
     }
 
-    public void cancelBooking(int bookingId) {
+    public void cancelBooking(int bookingId) throws BookingNotFoundException {
         Booking booking = findBookingById(bookingId);
-        if (booking != null) {
-            booking.cancel();
-            System.out.println("Booking cancelled successfully!");
-        } else {
-            System.out.println("Booking not found!");
+        if (booking == null) {
+            throw new BookingNotFoundException(bookingId);
         }
+        booking.cancel();
+        System.out.println("Booking cancelled successfully!");
     }
 
     public Booking findBookingById(int bookingId) {
