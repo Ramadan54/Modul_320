@@ -3,7 +3,7 @@
 **Autor:** Ramadan Asani  
 **Modul:** M320 - Objektorientiert programmieren  
 **Version:** 2.0  
-**Datum:** November 2025  
+**Datum:** 04.11.2025  
 **Java Version:** 17.0.12 LTS
 
 ---
@@ -803,16 +803,6 @@ java -cp bin com.hotelbooking.HotelApp
 
 ## 🔧 Technische Details
 
-### Statistiken
-
-- **Klassen:** 32
-- **Interfaces:** 3
-- **Enums:** 1
-- **Exceptions:** 4
-- **Zeilen Code:** 2.500+
-- **Packages:** 7
-- **Design Patterns:** 3
-
 ### Verwendete Java Features
 
 - ✅ **Java 8+:**
@@ -954,46 +944,8 @@ Alle Klassen enthalten Kommentare:
 - Debugging wäre einfacher gewesen
 - Produktions-Code sollte immer Logging haben
 
-### Ausblick
-
-**Mögliche Erweiterungen:**
-- Web-UI mit Spring Boot
-- Echte Datenbank (PostgreSQL)
-- REST API für Mobile Apps
-- Mehrsprachigkeit (i18n)
-- Reporting (PDF-Rechnungen)
-- Email-Benachrichtigungen
-- Online-Zahlung Integration
-
 ### Persönliches Fazit
 
 Dieses Projekt hat mir gezeigt, wie wichtig **saubere Architektur** und **Design Patterns** sind. Am Anfang erschien vieles überkompliziert ("Warum nicht einfacher?"), aber im Lauf des Projekts wurde klar: **Erweiterbarkeit und Wartbarkeit** sind Gold wert.
 
 Die **KI-Unterstützung** war hilfreich für Clean Code Kommentare und Reviews, aber das **grundlegende Verständnis** von OOP und Design Patterns musste ich selbst aufbauen. KI ist ein Tool, kein Ersatz für Lernen.
-
-**Wichtigste Erkenntnis:** Guter Code ist Code, den man in 6 Monaten noch versteht! 🎯
-
----
-
-## 📞 Kontakt
-
-**Autor:** Ramadan Asani  
-**E-Mail:** [deine-email]  
-**GitHub:** [dein-github]  
-**Modul:** M320 - Objektorientiert programmieren  
-
----
-
-## 📄 Lizenz
-
-Dieses Projekt wurde als Teil des Moduls M320 erstellt und dient ausschließlich zu Bildungszwecken.
-
----
-
-**Erstellt mit ❤️ und Clean Code**
-
-*"Any fool can write code that a computer can understand. Good programmers write code that humans can understand."* - Martin Fowler
-
----
-
-**Ende der Dokumentation**
