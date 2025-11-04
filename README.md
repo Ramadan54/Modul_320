@@ -867,17 +867,6 @@ java -cp bin com.hotelbooking.HotelApp
 - **Claude (Anthropic)** - Code Reviews, Clean Code Kommentare
 - **GitHub Copilot** - Auto-Completion (minimal)
 
-### Deklaration im Code
-
-Alle Klassen enthalten Kommentare:
-```java
-/**
- * KI-UNTERSTÜTZUNG:
- * [Beschreibung wo und wie KI geholfen hat]
- */
-```
-
----
 
 ## 🎓 Fazit und Lernprozess
 
