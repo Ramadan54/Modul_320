@@ -1,0 +1,254 @@
+
+╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║                                    HOTEL BUCHUNGSSYSTEM - VOLLSTÄNDIGES KLASSENDIAGRAMM                                   ║
+╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                    PACKAGE: MODEL                                                       │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────┐          ┌──────────────────────────┐
+│    <<interface>>         │          │    <<interface>>         │
+│      Bookable            │          │   AdditionalService      │
+├──────────────────────────┤          ├──────────────────────────┤
+│                          │          │                          │
+│ + calculatePrice(int)    │          │ + getServicePrice(int)   │
+│   : double               │          │   : double               │
+│ + getDescription()       │          │ + getServiceDescription()│
+│   : String               │          │   : String               │
+└──────────────────────────┘          └──────────────────────────┘
+         ▲                                      ▲
+         │                                      │
+         │ implements                           │ implements
+         │                                      │
+┌────────┴──────────────────────────────────────┴─────────┐
+│                                                          │
+│                   <<abstract>>                           │
+│                      Room                                │
+├──────────────────────────────────────────────────────────┤
+│ # roomNumber: int                                        │
+│ # pricePerNight: double                                  │
+│ # available: boolean                                     │
+├──────────────────────────────────────────────────────────┤
+│ + Room(int, double)                                      │
+│ + {abstract} calculatePrice(int): double                 │
+│ + {abstract} getDescription(): String                    │
+│ + getRoomNumber(): int                                   │
+│ + getPricePerNight(): double                            │
+│ + isAvailable(): boolean                                 │
+│ + setAvailable(boolean): void                           │
+└──────────────────────────────────────────────────────────┘
+         ▲                    ▲                    ▲
+         │                    │                    │
+         │                    │                    │
+    ┌────┴────┐         ┌─────┴─────┐      ┌──────┴──────┐
+    │         │         │           │      │             │
+┌───┴────┐ ┌──┴────┐ ┌──┴─────┐ ┌──┴────┐ ┌┴──────┐ ┌───┴────┐
+│SingleR.│ │DoubleR│ │  Suite │ │RoomDec│ │Break. │ │Parking │
+├────────┤ ├───────┤ ├────────┤ ├───────┤ ├───────┤ ├────────┤
+│        │ │-hasBal│ │-numRoom│ │#decora│ │-BREAKF│ │-PARKIN │
+│        │ │:bool  │ │:int    │ │tedRoom│ │_PRICE │ │G_PRICE │
+├────────┤ ├───────┤ ├────────┤ │:Room  │ │=15.0  │ │=10.0   │
+│+calcul.│ │+calcul│ │+calcul.│ ├───────┤ ├───────┤ ├────────┤
+│Price() │ │Price()│ │Price() │ │+calcul│ │+calcul│ │+calcul.│
+│:double │ │:double│ │:double │ │Price()│ │Price()│ │Price() │
+└────────┘ └───────┘ └────────┘ └───────┘ └───────┘ └────────┘
+
+
+┌──────────────────────────────────┐           ┌──────────────────────────────────┐
+│          <<enum>>                │           │           Booking                │
+│       BookingStatus              │           ├──────────────────────────────────┤
+├──────────────────────────────────┤           │ - bookingId: int                 │
+│ PENDING                          │           │ - checkInDate: LocalDate         │
+│ CONFIRMED                        │◄──────────│ - checkOutDate: LocalDate        │
+│ CHECKED_IN                       │           │ - room: Room                     │
+│ CHECKED_OUT                      │           │ - customer: Customer             │
+│ CANCELLED                        │           │ - status: BookingStatus          │
+└──────────────────────────────────┘           ├──────────────────────────────────┤
+                                               │ + Booking(...)                   │
+                                               │ + getTotalPrice(): double        │
+                                               │ + getNights(): int               │
+        ┌──────────────────────────┐           │ + confirm(): void                │
+        │       Customer           │           │ + checkIn(): void                │
+        ├──────────────────────────┤           │ + checkOut(): void               │
+        │ - customerId: int        │◄──────────│ + cancel(): void                 │
+        │ - name: String           │           │ + getBookingId(): int            │
+        │ - email: String          │           │ + getStatus(): BookingStatus     │
+        │ - phoneNumber: String    │           │ + getRoom(): Room                │
+        │ - bookings: List<Booking>│           │ + getCustomer(): Customer        │
+        ├──────────────────────────┤           └──────────────────────────────────┘
+        │ + Customer(...)          │                        │
+        │ + addBooking(Booking)    │                        │
+        │ + getName(): String      │                        │ uses
+        │ + getBookings(): List    │                        │
+        └──────────────────────────┘                        ▼
+                 │ has                            ┌──────────────────┐
+                 │ 1..*                           │      Room        │
+                 └────────────────────────────────►                  │
+                                                  └──────────────────┘
+
+
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                   PACKAGE: SERVICE                                                      │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────┐           ┌──────────────────────────────────────────┐
+│           RoomService                    │           │         BookingService                   │
+├──────────────────────────────────────────┤           ├──────────────────────────────────────────┤
+│ - rooms: List<Room>                      │           │ - bookings: List<Booking>                │
+├──────────────────────────────────────────┤           │ - nextBookingId: int                     │
+│ + RoomService()                          │           ├──────────────────────────────────────────┤
+│ + addRoom(Room): void                    │           │ + BookingService()                       │
+│ + getAllRooms(): List<Room>              │           │ + createBooking(...): Booking            │
+│ + getAvailableRooms(): List<Room>        │           │ + confirmBooking(int): void              │
+│ + findRoomByNumber(int): Room            │           │ + checkInBooking(int): void              │
+│ + displayAvailableRooms(): void          │           │ + checkOutBooking(int): void             │
+└──────────────────────────────────────────┘           │ + cancelBooking(int): void               │
+              │ manages                                │ + findBookingById(int): Booking          │
+              │                                        │ + getAllBookings(): List<Booking>        │
+              ▼                                        │ + getBookingsByCustomer(...): List       │
+        ┌──────────┐                                   └──────────────────────────────────────────┘
+        │   Room   │                                                 │ manages
+        └──────────┘                                                 │
+                                                                     ▼
+                                                              ┌────────────┐
+                                                              │   Booking  │
+                                                              └────────────┘
+
+
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                  PACKAGE: REPOSITORY                                                    │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+                                    ┌──────────────────────────────────┐
+                                    │      <<interface>>               │
+                                    │      Repository<T>               │
+                                    ├──────────────────────────────────┤
+                                    │ + save(T): void                  │
+                                    │ + findById(int): T               │
+                                    │ + findAll(): List<T>             │
+                                    │ + delete(int): void              │
+                                    │ + saveAll(): void                │
+                                    │ + loadAll(): void                │
+                                    └──────────────────────────────────┘
+                                            ▲              ▲
+                                            │              │
+                        ┌───────────────────┘              └───────────────────┐
+                        │ implements                                implements │
+                        │                                                      │
+        ┌───────────────┴────────────────┐             ┌───────────────────┴──────────────┐
+        │       RoomRepository           │             │     BookingRepository            │
+        ├────────────────────────────────┤             ├──────────────────────────────────┤
+        │ - rooms: Map<Integer, Room>    │             │ - bookings: Map<Integer, Booking>│
+        │ - filename: String             │             │ - filename: String               │
+        ├────────────────────────────────┤             ├──────────────────────────────────┤
+        │ + RoomRepository(String)       │             │ + BookingRepository(String)      │
+        │ + save(Room): void             │             │ + save(Booking): void            │
+        │ + findById(int): Room          │             │ + findById(int): Booking         │
+        │ + findAll(): List<Room>        │             │ + findAll(): List<Booking>       │
+        │ + delete(int): void            │             │ + delete(int): void              │
+        │ + saveAll(): void              │             │ + saveAll(): void                │
+        │ + loadAll(): void              │             │ + loadAll(): void                │
+        └────────────────────────────────┘             └──────────────────────────────────┘
+                    │ stores                                         │ stores
+                    ▼                                                ▼
+              ┌──────────┐                                    ┌────────────┐
+              │   Room   │                                    │   Booking  │
+              └──────────┘                                    └────────────┘
+
+
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                  PACKAGE: EXCEPTION                                                     │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+                                    ┌──────────────────────────────────┐
+                                    │      BookingException            │
+                                    ├──────────────────────────────────┤
+                                    │ + BookingException(String)       │
+                                    └──────────────────────────────────┘
+                                                   ▲
+                                                   │ extends
+                    ┌──────────────────────────────┼──────────────────────────────┐
+                    │                              │                              │
+    ┌───────────────┴───────────────┐  ┌──────────┴───────────────┐  ┌──────────┴─────────────────┐
+    │ BookingNotFoundException      │  │ InvalidBookingDate       │  │ RoomNotAvailable           │
+    │                               │  │ Exception                │  │ Exception                  │
+    ├───────────────────────────────┤  ├──────────────────────────┤  ├────────────────────────────┤
+    │+ BookingNotFoundException(int)│  │+ InvalidBookingDate(...) │  │+ RoomNotAvailable(int)     │
+    └───────────────────────────────┘  └──────────────────────────┘  └────────────────────────────┘
+
+
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                  PACKAGE: VALIDATOR                                                     │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+                            ┌──────────────────────────────────────────────┐
+                            │         BookingValidator                     │
+                            ├──────────────────────────────────────────────┤
+                            │ + {static} validateDates(...): void          │
+                            │ + {static} validateRoomAvailability(...): void│
+                            │ + {static} validateBooking(...): void        │
+                            └──────────────────────────────────────────────┘
+
+
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                    PACKAGE: MAIN                                                        │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────┐         ┌────────────────────────────────────────────┐
+│         HotelApp                          │         │      InteractiveHotelApp                   │
+│         (Original Demo)                   │         │      (Interaktive Version)                 │
+├───────────────────────────────────────────┤         ├────────────────────────────────────────────┤
+│ - {static} roomService: RoomService       │         │ - {static} roomService: RoomService        │
+│ - {static} bookingService: BookingService │         │ - {static} bookingService: BookingService  │
+│ - {static} roomRepository: RoomRepository │         │ - {static} scanner: Scanner                │
+│ - {static} bookingRepository: ...         │         │ - {static} exampleCustomers: Customer[]    │
+├───────────────────────────────────────────┤         ├────────────────────────────────────────────┤
+│ + {static} main(String[]): void           │         │ + {static} main(String[]): void            │
+│ - {static} initializeSystem(): void       │         │ - {static} runMainMenu(): void             │
+│ - {static} demonstrateUseCases(): void    │         │ - {static} createNewBooking(): void        │
+│ - {static} useCase1_...(): void           │         │ - {static} manageBooking(): void           │
+│ - {static} useCase2_...(): void           │         │ - {static} demonstrateDecorator(): void    │
+│ - {static} useCase3_...(): void           │         │ - {static} readIntInput(...): int          │
+│ - {static} useCase4_...(): void           │         │ - {static} readDateInput(...): LocalDate   │
+│ - {static} useCase5_...(): void           │         │ - {static} saveAllData(): void             │
+│ - {static} useCase6_...(): void           │         │ + (15+ weitere Methoden)                   │
+└───────────────────────────────────────────┘         └────────────────────────────────────────────┘
+              │ uses                                                │ uses
+              ▼                                                     ▼
+    ┌──────────────────┐                                 ┌──────────────────┐
+    │  RoomService     │                                 │  BookingService  │
+    │  BookingService  │                                 │  RoomService     │
+    └──────────────────┘                                 └──────────────────┘
+
+
+╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║                                                  LEGENDE                                                                  ║
+╠═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+║                                                                                                                           ║
+║  ──►   = Assoziation (verwendet/hat)                                                                                     ║
+║  ◄──   = Dependency (benutzt)                                                                                            ║
+║  ▲     = Vererbung (extends) / Implementierung (implements)                                                              ║
+║  <<interface>> = Interface                                                                                                ║
+║  <<abstract>>  = Abstrakte Klasse                                                                                        ║
+║  <<enum>>      = Enumeration                                                                                             ║
+║  {static}      = Statische Methode                                                                                       ║
+║  + = public    # = protected    - = private                                                                              ║
+║                                                                                                                           ║
+║  DESIGN PATTERNS:                                                                                                         ║
+║  • Decorator Pattern: RoomDecorator + Breakfast, Parking, Wellness                                                       ║
+║  • Repository Pattern: Repository<T> Interface + RoomRepository, BookingRepository                                       ║
+║  • Service Layer: RoomService, BookingService                                                                            ║
+║                                                                                                                           ║
+║  OOP-KONZEPTE:                                                                                                            ║
+║  • Vererbung: Room → SingleRoom, DoubleRoom, Suite                                                                       ║
+║  • Polymorphismus: calculatePrice() überschrieben in allen Room-Subklassen                                               ║
+║  • Abstraktion: Abstract Room, Abstract RoomDecorator                                                                    ║
+║  • Kapselung: Private Felder mit public Gettern/Settern                                                                  ║
+║  • Interfaces: Bookable, AdditionalService, Repository<T>                                                                ║
+║                                                                                                                           ║
+║  GESAMT: 32 Klassen, 3 Interfaces, 1 Enum, 4 Exceptions                                                                  ║
+║                                                                                                                           ║
+╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
