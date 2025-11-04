@@ -7,8 +7,4 @@ public class BookingNotFoundException extends BookingException {
         super("Booking with ID #" + bookingId + " not found.");
         this.bookingId = bookingId;
     }
-
-    public int getBookingId() {
-        return bookingId;
-    }
 }
